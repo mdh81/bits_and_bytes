@@ -1,7 +1,9 @@
+// ReSharper disable CppDFAUnreachableFunctionCall
 #pragma once
 
 #include <format>
 #include <ostream>
+#include <ranges>
 #include <string>
 #include "Common.h"
 
@@ -47,14 +49,20 @@ namespace bits_and_bytes {
                 binaryString.resize(numBitsInFormattedOutput, '0');
             }
             reverseString(binaryString);
-            return stringFormat.bitUnit != BitUnit::None ?
-                groupBits(binaryString, stringFormat.bitUnit) : binaryString;
+            if (auto [groupingEnabled, groupSize] = getGroupSize(false); groupingEnabled) {
+                return groupBits(binaryString, groupSize);
+            }
+            return binaryString;
         }
 
-        [[nodiscard]] std::string formatHex(std::string&& binaryString) const {
+        [[nodiscard]] std::string formatHex(std::string&& hexString) const {
             std::string result;
-            result.resize(binaryString.size());
-            std::ranges::transform(binaryString, result.begin(), [this](char const c) {
+            if (stringFormat.leadingZeroes == LeadingZeroes::Include) {
+                result.resize(numBitsInFormattedOutput / NumBitsInOneNibble, '0');
+            } else {
+                result.resize(hexString.size());
+            }
+            std::ranges::transform(hexString, result.begin(), [this](char const c) {
                 if (stringFormat.hexFormat == HexFormat::LowerCase && isupper(c)) {
                     return static_cast<char>('a' + c - 'A');
                 }
@@ -64,34 +72,52 @@ namespace bits_and_bytes {
                 return c;
             });
             reverseString(result);
-            return "0x" + result;
+            if (auto [groupingEnabled, groupSize] = getGroupSize(true); groupingEnabled) {
+                result = groupBits(result, groupSize);
+            }
+            return "0x " + result;
         }
 
-        [[nodiscard]] std::string groupBits(std::string_view binaryString, BitUnit const bitUnit) const {
-            std::string spaceSeparatedBinaryString;
-            auto const spaceCadence = asValue(bitUnit);
-            if (binaryString.size() <= spaceCadence) {
-                return std::string(binaryString);
+        [[nodiscard]] std::pair<bool, uint8_t> getGroupSize(bool const isHex) const {
+            if (stringFormat.bitUnit == BitUnit::None) {
+                return { false, 0 };
             }
-            spaceSeparatedBinaryString.resize(binaryString.size() + (stringFormat.leadingZeroes == LeadingZeroes::Suppress ?
-                binaryString.size() / spaceCadence : binaryString.size() / spaceCadence - 1));
-            auto insertIndex {spaceSeparatedBinaryString.size() - 1};
-            auto bitCounter{0U};
-            for (auto itr = binaryString.rbegin(); itr != binaryString.rend(); --insertIndex) {
-                if (bitCounter == spaceCadence) {
-                    spaceSeparatedBinaryString[insertIndex] = ' ';
-                    bitCounter = 0U;
-                    continue;
+            uint8_t groupSize = stringFormat.bitUnit == BitUnit::Byte ? NumBitsInOneByte : NumBitsInOneNibble;
+            groupSize = isHex ? groupSize / 4 : groupSize;
+            return { true, groupSize };
+        }
+
+        [[nodiscard]]
+        std::string groupBits(std::string_view const& numStr, uint8_t const groupSize) const {
+            if (numStr.size() <= groupSize) {
+                return std::string{numStr};
+            }
+            std::string result;
+            auto numGroups = numStr.size() / groupSize;
+            if (numStr.size() % groupSize) {
+                numGroups += 1;
+            }
+            auto const numSpaces= numGroups - 1U;
+            auto const size = numStr.size() + numSpaces;
+            result.resize(size);
+            uint8_t digitCounter {};
+            auto outItr = result.rbegin();
+            for (auto itr = numStr.rbegin(); itr != numStr.rend(); ++outItr, ++itr) {
+                if (digitCounter == groupSize) {
+                    digitCounter = 1;
+                    *outItr = stringFormat.groupDelimiter;
+                    ++outItr;
+                    *outItr = *itr;
+                } else {
+                    ++digitCounter;
+                    *outItr = *itr;
                 }
-                spaceSeparatedBinaryString[insertIndex] = *itr;
-                ++bitCounter;
-                ++itr;
             }
-            return spaceSeparatedBinaryString;
+            return result;
         }
 
         static void reverseString(std::string& str) {
-            for (auto i = static_cast<uint8_t>(str.size()) - 1U, j = 0U; i > j; --i, ++j) {
+            for (uint8_t i = static_cast<uint8_t>(str.size()) - 1U, j = 0U; i > j; --i, ++j) {
                 std::swap(str[i], str[j]);
             }
         }
