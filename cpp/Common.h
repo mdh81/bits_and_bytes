@@ -36,6 +36,7 @@ namespace bits_and_bytes {
 
     unsigned char constexpr NumBitsInOneByte {8U};
     unsigned char constexpr NumBitsInOneNibble {4U};
+    char constexpr DEFAULT_GROUP_DELIMITER {' '};
 
     struct StringFormat {
         Order order;
@@ -43,6 +44,7 @@ namespace bits_and_bytes {
         HexFormat hexFormat;
         BitUnit bitUnit;
         LeadingZeroes leadingZeroes;
+        char groupDelimiter;
     };
 
     inline StringFormat constexpr DEFAULT_STRING_FORMAT {
@@ -50,6 +52,8 @@ namespace bits_and_bytes {
         Format::Binary,
         HexFormat::UpperCase,
         BitUnit::Nibble,
-        LeadingZeroes::Include
+        LeadingZeroes::Include,
+        DEFAULT_GROUP_DELIMITER
     };
+
 }
