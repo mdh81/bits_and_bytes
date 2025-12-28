@@ -8,6 +8,10 @@ class Bits : public testing::Test {
 public:
     void SetUp() override {
         bb::BitsBase::stringFormat = bb::DEFAULT_STRING_FORMAT;
+        // This string makes the tests readable by splitting long strings into groups and including leading zeroes for
+        // clarity
+        bb::BitsBase::stringFormat.leadingZeroes = bb::LeadingZeroes::Include;
+        bb::BitsBase::stringFormat.bitUnit = bb::BitUnit::Nibble;
     }
 
     static void disableLeadingZeroes() {
@@ -19,7 +23,7 @@ public:
     }
 
     static void enableHexaDecimalOutput() {
-        bb::BitsBase::stringFormat.format = bb::Format::HexaDecimal;
+        bb::BitsBase::stringFormat.format = bb::Format::Hexadecimal;
     }
 
     static void groupByBytes() {

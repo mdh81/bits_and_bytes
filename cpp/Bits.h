@@ -16,21 +16,16 @@ namespace bits_and_bytes {
     // 2. Python module
     // 3. Class named Bytes that accepts a T or sequence of T and serializes them to a byte array
 
-    // Non-template base class that allows clients of Bits to set the string format globally for all template
-    // instantiations of Bits<T>
+    /// Non-template base class that allows clients of Bits to set the string format globally for all template
+    /// instantiations of Bits<T>
     struct BitsBase {
-        inline static StringFormat stringFormat {
-            Order::BigEndian,
-            Format::Binary,
-            HexFormat::UpperCase,
-            BitUnit::Nibble,
-            LeadingZeroes::Include
-        };
+        inline static StringFormat stringFormat = DEFAULT_STRING_FORMAT;
     };
 
     template<typename NumericType>
     class Bits;
 
+    /// Helper class used by Bits<T> for printing its bits according to the chosen string format
     class BitsPresenter {
     public:
         BitsPresenter(StringFormat const& stringFormat, uint8_t const numBitsInFormattedOutput)
@@ -39,16 +34,19 @@ namespace bits_and_bytes {
 
         template<typename NumericType>
         void format(Bits<NumericType> const& bits) const {
-            formattedOutput = stringFormat.format == Format::Binary ?
-                formatBinary(bits.asBits()) : formatHex(bits.asHex());
+            formattedOutput = stringFormat.format == Format::Binary
+                ? formatBinary(bits.asBits())
+                : formatHex(bits.asHex());
         }
 
-        [[nodiscard]] std::string const& getOutput() const {
+        [[nodiscard]]
+        std::string const& getOutput() const {
             return formattedOutput;
         }
 
     private:
-        [[nodiscard]] std::string formatBinary(std::string&& binaryString) const {
+        [[nodiscard]]
+        std::string formatBinary(std::string&& binaryString) const {
             if (stringFormat.leadingZeroes == LeadingZeroes::Include) {
                 binaryString.resize(numBitsInFormattedOutput, '0');
             }
@@ -59,18 +57,18 @@ namespace bits_and_bytes {
             return binaryString;
         }
 
-        [[nodiscard]] std::string formatHex(std::string&& hexString) const {
-            std::string result;
-            if (stringFormat.leadingZeroes == LeadingZeroes::Include) {
-                result.resize(numBitsInFormattedOutput / NUM_BITS_IN_ONE_NIBBLE, '0');
-            } else {
-                result.resize(hexString.size());
-            }
+        [[nodiscard]]
+        std::string formatHex(std::string&& hexString) const {
+            std::string result(
+                stringFormat.leadingZeroes == LeadingZeroes::Include
+                    ? numBitsInFormattedOutput / NUM_BITS_IN_ONE_NIBBLE
+                    : hexString.size(), '0'
+            );
             std::ranges::transform(hexString, result.begin(), [this](char const c) {
-                if (stringFormat.hexFormat == HexFormat::LowerCase && isupper(c)) {
+                if (stringFormat.hexFormat == HexFormat::LowerCase && std::isupper(c)) {
                     return static_cast<char>('a' + c - 'A');
                 }
-                if (stringFormat.hexFormat == HexFormat::UpperCase && islower(c)) {
+                if (stringFormat.hexFormat == HexFormat::UpperCase && std::islower(c)) {
                     return static_cast<char>('A' + c - 'a');
                 }
                 return c;
@@ -79,20 +77,27 @@ namespace bits_and_bytes {
             if (auto [groupingEnabled, groupSize] = getGroupSize(true); groupingEnabled) {
                 result = groupBits(result, groupSize);
             }
-            return "0x " + result;
+            return "0x" + result;
         }
 
-        [[nodiscard]] std::pair<bool, uint8_t> getGroupSize(bool const isHex) const {
+        [[nodiscard]]
+        std::pair<bool, uint8_t> getGroupSize(bool const isHex) const {
             if (stringFormat.bitUnit == BitUnit::None) {
                 return { false, 0 };
             }
-            uint8_t groupSize = stringFormat.bitUnit == BitUnit::Byte ? NUM_BITS_IN_ONE_BYTE : NUM_BITS_IN_ONE_NIBBLE;
-            groupSize = isHex ? groupSize / 4 : groupSize;
+            uint8_t groupSize =
+                stringFormat.bitUnit == BitUnit::Byte
+                ? NUM_BITS_IN_ONE_BYTE
+                : NUM_BITS_IN_ONE_NIBBLE;
+            groupSize =
+                isHex
+                ? groupSize / NUM_BITS_IN_ONE_NIBBLE
+                : groupSize;
             return { true, groupSize };
         }
 
         [[nodiscard]]
-        std::string groupBits(std::string_view const& numStr, uint8_t const groupSize) const {
+        std::string groupBits(std::string_view const numStr, uint8_t const groupSize) const {
             if (numStr.size() <= groupSize) {
                 return std::string{numStr};
             }
@@ -170,6 +175,13 @@ namespace bits_and_bytes {
             return str;
         }
 
+        /// Gets the numeric value of the bit representation
+        [[nodiscard]]
+        operator NumericType() const { // NOLINT: Implicit conversion is the api
+            return value;
+        }
+
+        /// Gets the numeric value of the bit representation
         NumericType getValue() const { return value; }
 
     private:
@@ -198,9 +210,9 @@ namespace bits_and_bytes {
             NumericType number {value};
             binaryString.reserve(numBitsInType);
             do {
-                auto bit = number % 2;
+                auto const bit = number & 1;
                 binaryString.push_back(bit == 0 ? '0' : '1');
-                number /= 2;
+                number >>= 1;
             } while (number);
             return binaryString;
         }
