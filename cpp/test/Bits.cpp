@@ -108,25 +108,25 @@ TEST_F(Bits, WillUseUserProvidedDelimiterForGrouping) {
 }
 
 TEST_F(Bits, WillBuildFromHexaDecimalString) {
- //   ASSERT_EQ(0xAF, bb::Bits<int16_t>{"0xAF"}.getValue());
-  //  ASSERT_EQ(0, bb::Bits<int16_t>{"0x0"}.getValue());
+    ASSERT_EQ(0xAF, bb::Bits<int16_t>{"0xAF"}.getValue());
+    ASSERT_EQ(0, bb::Bits<int16_t>{"0x0"}.getValue());
     ASSERT_THROW(
         try {
             bb::Bits<int8_t>{"0x1FF"};
         } catch (std::runtime_error const& ex) {
             ASSERT_STREQ(ex.what(), "Hexadecimal value 0x1FF (Decimal = 511) exceeds type's maximum 127");
             throw;
-        },
-    std::runtime_error);
+        }, std::runtime_error
+    );
     ASSERT_STREQ("1111 1111", bb::Bits<uint8_t>{"0xFF"});
     ASSERT_THROW(
         try {
             bb::Bits<int8_t>{"0x"};
         } catch (std::runtime_error const& ex) {
-            ASSERT_STREQ(ex.what(), "0x is not a valid binary or hexadecimal representation");
+            ASSERT_STREQ(ex.what(), "0x is not a valid hexadecimal value.");
             throw;
-        },
-    std::runtime_error);
+        }, std::runtime_error
+    );
 }
 
 TEST_F(Bits, WillBuildPositiveNumbersFromBinaryString) {

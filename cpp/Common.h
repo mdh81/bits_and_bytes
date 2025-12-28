@@ -217,7 +217,7 @@ namespace bits_and_bytes {
         hexString.push_back('0'); hexString.push_back('x');
         std::string_view const binStr {canonicalBinaryString };
         for (size_t i = 0; i < binStr.length(); i+=4) {
-            auto const nibble = binStr.substr(i, i + 4);
+            auto const nibble = binStr.substr(i, NUM_BITS_IN_ONE_NIBBLE);
             hexString.push_back(asHexDigit(nibble));
         }
         return hexString;
