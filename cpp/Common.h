@@ -18,7 +18,7 @@ namespace bits_and_bytes {
 
     enum class Format : uint8_t {
         Binary,
-        HexaDecimal,
+        Hexadecimal,
     };
 
     enum class HexFormat : uint8_t {
@@ -58,8 +58,8 @@ namespace bits_and_bytes {
         Order::BigEndian,
         Format::Binary,
         HexFormat::UpperCase,
-        BitUnit::Nibble,
-        LeadingZeroes::Include,
+        BitUnit::None,
+        LeadingZeroes::Suppress,
         DEFAULT_GROUP_DELIMITER
     };
 
