@@ -35,8 +35,8 @@ $ ./build/cpp/examples
 
 Print numbers as bits
 
-bb::Bits(10) prints as 1010
-bb::Bits(10) prints as 0xA when BitsBase::stringFormat.format == Format::Hexadecimal 
+Bits(10) prints as 1010
+Bits(10) prints as 0xA when BitsBase::stringFormat.format == Format::Hexadecimal 
 
 Converts bits to numbers by interpreting them as twos complement
 

@@ -10,9 +10,9 @@ int main() {
 
     std::println("\nPrint numbers as bits\n");
     int8_t constexpr ten {10};
-    std::println("bb::Bits(10) prints as {}", bb::Bits(ten));
+    std::println("Bits(10) prints as {}", bb::Bits(ten));
     bb::BitsBase::stringFormat.format = bb::Format::Hexadecimal;
-    std::println("bb::Bits(10) prints as {} when BitsBase::stringFormat.format == Format::Hexadecimal ", bb::Bits(ten));
+    std::println(":Bits(10) prints as {} when BitsBase::stringFormat.format == Format::Hexadecimal ", bb::Bits(ten));
 
     std::println("\nConverts bits to numbers by interpreting them as twos complement\n");
     int8_t value = bb::Bits<int8_t>{"0x7F"};
