@@ -15,7 +15,7 @@ This library is for visualizing numbers as bits
 $ cd <this repo dir>
 $ mkdir bld
 $ cmake -S . -B build -DBUILD_EXAMPLES=ON 
-$ ctest .
+$ ctest --test-dir build/
 ```
 
 ### Usage
