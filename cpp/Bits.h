@@ -36,14 +36,12 @@ namespace bits_and_bytes {
         /// to be in two's complement form and a signed value is generated accordingly
         /// @exception OutOfRangeException bitString exceeds the bit width of this template type
         /// @exception BitFormatException bitString is not a valid hexadecimal or binary string
-        ///
         explicit Bits(std::string_view const bitString)
             : value(convertToDecimal(bitString)) {
         }
 
         /// Compares this bits sequence to another bit sequence of potentially different bit width returning true
         /// if the underlying numeric values are equal
-        ///
         template<typename AnotherNumericType>
         [[nodiscard]]
         bool operator==(Bits<AnotherNumericType> const& another) const {
@@ -51,14 +49,12 @@ namespace bits_and_bytes {
         }
 
         /// Implicitly converts Bits<NumericType> to NumericType
-        ///
         [[nodiscard]]
         operator NumericType() const { // NOLINT: Implicit conversion is by design
             return value;
         }
 
         /// Compares this object to a formatted bit string by applying the current format to this object's bit sequence
-        ///
         [[nodiscard]]
         bool operator==(std::string_view const bitString) const {
             return getString() == bitString;
@@ -68,6 +64,8 @@ namespace bits_and_bytes {
         [[nodiscard]]
         NumericType getValue() const { return value; }
 
+        /// Gets the bit representation as a string using the current string format
+        /// @see StringFormat
         [[nodiscard]]
         std::string_view getString() const {
             if (!presenter) {
@@ -75,11 +73,6 @@ namespace bits_and_bytes {
                 presenter->format(*this);
             }
             return presenter->getOutput();
-        }
-
-        [[nodiscard]]
-        uint8_t length() const {
-            return getString().length();
         }
 
     private:
@@ -175,68 +168,6 @@ namespace bits_and_bytes {
             return binaryString.starts_with('1') && std::is_signed_v<NumericType>
             ? interpretAsTwosComplement(binaryString)
             : interpretAsUnsignedBinary(binaryString);
-        }
-
-        [[nodiscard]] static uint8_t hexDigitAsDecimal(char const hexDigit) {
-            if (hexDigit >= '0' && hexDigit <= '9') {
-                return hexDigit - '0';
-            }
-            return std::tolower(hexDigit) - 'a' + TEN;
-        }
-
-        [[nodiscard]] NumericType interpretHexAsTwosComplement(std::string_view const hexStr) {
-            // NOTE: Caller is expected to strip prefix 0x from the input argument
-            std::string binStr;
-            binStr.reserve(hexStr.size() * NUM_BITS_IN_ONE_NIBBLE);
-            for (auto const hexDigit : hexStr) {
-                for (auto const nibble = nibbleAsBits(hexDigitAsDecimal(hexDigit)); auto const bit : nibble) {
-                    binStr.push_back(bit);
-                }
-            }
-            return interpretAsTwosComplement(binStr);
-        }
-
-        [[nodiscard]] NumericType hexAsDecimal(std::string_view const hexStr) {
-            if (hexDigitAsDecimal(hexStr[2]) >> 3) { // Check the sign bit
-                return interpretHexAsTwosComplement(std::string_view{hexStr.cbegin() + 2, hexStr.cend() });
-            }
-            uint64_t rawValue{};
-            uint64_t hexPlaceValue{1};
-            for (char const digit : std::ranges::reverse_view(hexStr)) {
-                if (digit == 'x') break;
-                rawValue += hexDigitAsDecimal(digit) * hexPlaceValue;
-                hexPlaceValue *= SIXTEEN;
-            }
-            if (rawValue <= MaxValue) {
-                return static_cast<NumericType>(rawValue);
-            }
-            throw std::runtime_error
-            (
-                std::format("Hexa decimal value {} (Decimal = {}) exceeds type's maximum {}",
-                    hexStr, rawValue, MaxValue)
-            );
-        }
-
-        [[nodiscard]] static std::optional<std::string> getMatchingNumberString(std::string_view const str, std::regex const& expr) {
-            std::string potentialNumStr;
-            potentialNumStr.reserve(str.size());
-            std::ranges::copy_if(str, std::back_inserter(potentialNumStr),
-                [](char const c) { return !std::isspace(c); });
-            std::smatch matches;
-            std::regex_match(potentialNumStr, matches, expr);
-            if (matches.ready() && matches.size() == 1) {
-                return std::make_optional(potentialNumStr);
-            }
-            return std::nullopt;
-        }
-
-        [[nodiscard]] static std::optional<std::string> isValidHex(std::string_view const str) {
-            return getMatchingNumberString(str, HEX_REGEX);
-
-        }
-
-        [[nodiscard]] static std::optional<std::string> isValidBinary(std::string_view const str) {
-            return getMatchingNumberString(str, BIN_REGEX);
         }
 
         NumericType value;

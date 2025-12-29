@@ -42,10 +42,10 @@ TEST_F(Bits, WillSizeUnsignedIntegerTypesCorrectly) {
     disableLeadingZeroes();
     disableBitGrouping();
 
-    ASSERT_EQ(1, bb::Bits{int8_t{0U}}.length());
-    ASSERT_EQ(16, bb::Bits{uint16_t{0xFFFF}}.length());
-    ASSERT_EQ(32, bb::Bits{uint32_t{0xFFFF'FFFF}}.length());
-    ASSERT_EQ(64, bb::Bits{uint64_t{0xFFFF'FFFF'FFFF'FFFF}}.length());
+    ASSERT_EQ(1, bb::Bits{int8_t{0U}}.getString().length());
+    ASSERT_EQ(16, bb::Bits{uint16_t{0xFFFF}}.getString().length());
+    ASSERT_EQ(32, bb::Bits{uint32_t{0xFFFF'FFFF}}.getString().length());
+    ASSERT_EQ(64, bb::Bits{uint64_t{0xFFFF'FFFF'FFFF'FFFF}}.getString().length());
 }
 
 TEST_F(Bits, WillGroupByNibbleWhenLeadingZeroesAreOff) {

@@ -32,10 +32,6 @@ namespace bits_and_bytes {
         None
     };
 
-    [[nodiscard]] inline uint8_t asValue(BitUnit const& bitUnit) {
-        return bitUnit == BitUnit::Nibble ? 4 : 8;
-    }
-
     enum class LeadingZeroes : uint8_t {
         Suppress,
         Include,
@@ -175,6 +171,7 @@ namespace bits_and_bytes {
         return rawVal <= 9 ? '0' + rawVal : 'A' + rawVal - TEN;
     }
 
+    /// Canonicalizes a hexadecimal string to a binary string
     inline std::string convertHexToCanonicalBinaryString(std::string_view const hexString) {
         auto const canonicalBitString = validateHex(hexString);
         std::string binaryString;
@@ -187,7 +184,6 @@ namespace bits_and_bytes {
 
     /// Appends leading zeroes to the input bit string.
     /// @exception BitFormatException if the input is not a valid hexadecimal or binary string
-    ///
     template<typename NumericType>
     [[nodiscard]] std::string zeroExtend(std::string_view const bitString) {
         std::string binaryString = bitString.starts_with("0x")
@@ -204,7 +200,6 @@ namespace bits_and_bytes {
     /// Converts binary string to hexadecimal string
     /// @exception OutOfRangeException binary string's width is larger than 64 bits
     /// @exception BitFormatException binary string is not a series of nibbles
-    ///
     [[nodiscard]]
     inline std::string convertBinaryToHexString(std::string_view const binaryString) {
         auto const canonicalBinaryString = canonicalizeBinaryString(binaryString);
