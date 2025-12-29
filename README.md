@@ -38,7 +38,7 @@ Print numbers as bits
 Bits(10) prints as 1010
 Bits(10) prints as 0xA when BitsBase::stringFormat.format == Format::Hexadecimal 
 
-Converts bits to numbers by interpreting them as two's complement
+Converts bits to numbers by interpreting them as two\'s complement
 
 Bits<int8_t>{"0x7F"} == 127: true
 Bits<int8_t>{"0x80"} == -128: true
