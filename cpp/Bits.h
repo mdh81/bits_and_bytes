@@ -11,10 +11,6 @@
 
 
 namespace bits_and_bytes {
-    // TODO:
-    // 1. Support for floating point types
-    // 2. Python module
-    // 3. Class named Bytes that accepts a T or sequence of T and serializes them to a byte array
 
     /// Non-template base class that allows clients of Bits to set the string format globally for all template
     /// instantiations of Bits<T>
