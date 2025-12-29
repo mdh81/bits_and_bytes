@@ -19,11 +19,9 @@ namespace bits_and_bytes {
         inline static StringFormat stringFormat = DEFAULT_STRING_FORMAT;
     };
 
-
-
     template<typename NumericType>
     class Bits final : public BitsBase {
-        static_assert(std::is_integral_v<NumericType>);
+    static_assert(std::is_integral_v<NumericType>);
     public:
         /// @brief Constructs a bit sequence for the given number.
         ///
