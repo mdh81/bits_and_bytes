@@ -3,6 +3,8 @@
 
 This library is for visualizing numbers as bits
 
+[![Quality](https://github.com/mdh81/bit_viewer/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/mdh81/bit_viewer/actions/workflows/cmake-single-platform.yml)
+
 ### Build
 
 #### Prerequisites
