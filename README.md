@@ -29,9 +29,9 @@ $ ctest --test-dir build/
 
 ```c++
 int8_t constexpr ten {10};
-std::println("Bits(10) = {}", bb::Bits(ten));
-bb::BitsBase::stringFormat.format = bb::Format::Hexadecimal;
-std::println("Bits(10) = {}", bb::Bits(ten));
+std::println("Bits(10) = {}", Bits(ten));
+BitsBase::stringFormat.format = Format::Hexadecimal;
+std::println("Bits(10) = {}", Bits(ten));
 ```
 
 ```bash
@@ -40,9 +40,9 @@ Bits(10) = 0xA
 ```
 ##### Convert bits (interpreted as two's complement) to numbers
 ```c++
-std::println(" 127  == Bits<int8_t>(\"0111 1111\") : {}", bb::Bits<int8_t>{"0111 1111"} == 0x7F);
-std::println("-128  == Bits<int8_t>(\"0x80\")      : {}", std::numeric_limits<int8_t>::min() == bb::Bits<int8_t>{"0x80"});
-std::println(" 128  == Bits<uint8_t>(\"0x80\")     : {}", 128 == bb::Bits<uint8_t>{"0x80"});
+std::println(" 127  == Bits<int8_t>(\"0111 1111\") : {}", Bits<int8_t>{"0111 1111"} == 0x7F);
+std::println("-128  == Bits<int8_t>(\"0x80\")      : {}", std::numeric_limits<int8_t>::min() == Bits<int8_t>{"0x80"});
+std::println(" 128  == Bits<uint8_t>(\"0x80\")     : {}", 128 == Bits<uint8_t>{"0x80"});
 ```
 ```bash
  127  == Bits<int8_t>("0111 1111") : true
@@ -51,10 +51,10 @@ std::println(" 128  == Bits<uint8_t>(\"0x80\")     : {}", 128 == bb::Bits<uint8_
 ```
 ##### Convert numbers to bits using two's complement
 ```c++
-std::println("Bits<int8_t>(-3)   = {}", bb::Bits<int8_t>{-0x3});
-std::println("Bits<uint8_t>(253) = {}", bb::Bits<uint8_t>{0xFD});
-std::println("Bits<int16_t>(-1)  = {}", bb::Bits<int16_t>{-0x1});
-std::println("Bits<int8_t>(1)    = {}", bb::Bits<int8_t>{0x1});
+std::println("Bits<int8_t>{{-3}}   = {}", Bits<int8_t>{-0x3});
+std::println("Bits<uint8_t>{{253}} = {}", Bits<uint8_t>{0xFD});
+std::println("Bits<int16_t>{{-1}}  = {}", Bits<int16_t>{-0x1});
+std::println("Bits<int8_t>{{1}}    = {}", Bits<int8_t>{0x1});
 ```
 ```bash
 Bits<int8_t>(-3)   = 0xFD
