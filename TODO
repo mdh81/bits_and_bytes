@@ -1,7 +1,6 @@
 // TODOs:
 
-1. Build bit sequence from negative numbers
-2. Support for floating point types
-3. Python module
-4. Class named Bytes that accepts a T or sequence of T and serializes them to a byte array
-5. Auto-generate README.md from output of examples
+1. Support for floating point types
+2. Python module
+3. Class named Bytes that accepts a T or sequence of T and serializes them to a byte array
+4. Auto-generate README.md from output of examples

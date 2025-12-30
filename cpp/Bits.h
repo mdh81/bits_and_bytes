@@ -62,7 +62,9 @@ namespace bits_and_bytes {
 
         /// Gets the numeric value of the bit representation
         [[nodiscard]]
-        NumericType getValue() const { return value; }
+        NumericType getValue() const {
+            return value;
+        }
 
         /// Gets the bit representation as a string using the current string format
         /// @see StringFormat
@@ -94,29 +96,54 @@ namespace bits_and_bytes {
             return getNumberOfBits() / NUM_BITS_IN_ONE_NIBBLE;
         }
 
+        /// @brief Converts data member NumericType::value to a binary sequence of length sizeof(NumericType) * 8
+        /// To make this conversion without relying on any implementation-defined behavior, this method simply converts a
+        /// signed value to a variable of unsigned type of the same width. The language guarantees that conversion from
+        /// a signed value to an unsigned value is well-defined, and it relies on modulo arithmetic and bit width of
+        /// the unsigned type.
+        ///
+        /// Example:
+        /// int8_t value = -3;             // 0xFD in two's complement form
+        /// uint8_t unsignedValue = value; // Still 0xFD because conversion uses modulo 2^N arithmetic
+        ///                                // where N = 8 = sizeof(uint8_t) * 8
+        /// Therefore, unsignedValue = -3 % 256 = 253
+        /// As a result, the following bit extraction loop becomes well-defined
+        /// do {
+        ///     auto bit = unsignedValue & 1U;
+        ///     unsignedValue >>= 1;
+        /// } while(unsignedValue);
+        ///
+        /// If the signed "value" was used in place of unsignedValue, this loop's behavior is implementation-defined.
+        /// In clang 16 on macOS, this loop is infinite since right shifting -1 yields -1 (sign propagation shift)
+        /// @note Left-shifting a negative value is UB already
         [[nodiscard]]
         std::string asBits() const {
             std::string binaryString;
             auto const numBitsInType = getNumberOfBits();
-            NumericType number {value};
+            using UnsignedNumericType = std::make_unsigned_t<NumericType>;
+            UnsignedNumericType number = value;
+            UnsignedNumericType constexpr ONE{1U};
             binaryString.reserve(numBitsInType);
             do {
-                auto const bit = number & 1;
+                auto const bit = number & ONE;
                 binaryString.push_back(bit == 0 ? '0' : '1');
-                number >>= 1;
+                number >>= ONE;
             } while (number);
             return binaryString;
         }
 
+        /// @brief Converts data member NumericType::value to a hexadecimal sequence of length (sizeof(NumericType) * 8)/4
+        /// @see Bits<NumericType>::asBits()
         [[nodiscard]]
         std::string asHex() const {
             std::string hexString{};
-            auto number = value;
+            using UnsignedNumericType = std::make_unsigned_t<NumericType>;
+            UnsignedNumericType number = value;
             do {
-                auto hexDigit = number % SIXTEEN;
-                auto hexDigitChar { hexDigit <= NINE ? '0' : stringFormat.hexFormat == HexFormat::LowerCase ? 'a' : 'A' };
+                auto hexDigit = number & 0xF;
+                auto hexDigitChar { hexDigit <= NINE ? '0' : 'A' };
                 hexString.push_back(hexDigit <= NINE ? hexDigitChar + hexDigit : hexDigitChar + (hexDigit - TEN));
-                number = number / SIXTEEN;
+                number >>= NUM_BITS_IN_ONE_NIBBLE;
             } while (number);
             return hexString;
         }

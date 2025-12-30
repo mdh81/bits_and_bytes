@@ -152,3 +152,9 @@ TEST_F(Bits, WillBuildNegativeNumbersFromTwosComplementHexString) {
     ASSERT_EQ(-16, bb::Bits<int8_t>{"0xF0"}.getValue());
     ASSERT_EQ(std::numeric_limits<int16_t>::min(), bb::Bits<int16_t>{"0x8000"}.getValue());
 }
+
+TEST_F(Bits, WillBuildBitSequenceFromNegativeNumbers) {
+    ASSERT_EQ("1111 1000", bb::Bits<int8_t>{-8});
+    ASSERT_EQ("1111 1111", bb::Bits<int8_t>{-1});
+    ASSERT_EQ("1111 1111 1111 1111", bb::Bits<int16_t>{-1});
+}

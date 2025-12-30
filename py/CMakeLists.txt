@@ -21,3 +21,7 @@ include_directories(
     ${Python_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/../cpp
 )
+
+file(GLOB bindingSrcs "./bitview/*.cpp")
+pybind11_add_module(bitview MODULE ${bindingSrcs})
+set_target_properties(bitview PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bitview)

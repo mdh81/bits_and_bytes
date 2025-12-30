@@ -43,4 +43,9 @@ Converts bits to numbers by interpreting them as 2s complement
 Bits<int8_t>{"0x7F"} == 127: true
 Bits<int8_t>{"0x80"} == -128: true
 Bits<uint8_t>{"0x80"} == 128: true 
+
+Converts negative numbers to 2s complement bit sequence
+
+Bits<int8_t>{-3} prints as 0xFD
+Bits<int8_t>{-1} prints as 0xFF
 ```
