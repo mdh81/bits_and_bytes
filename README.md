@@ -46,6 +46,10 @@ Bits<uint8_t>{"0x80"} == 128: true
 
 Converts negative numbers to 2s complement bit sequence
 
+Converts numbers to bits using two's complement
+
 Bits<int8_t>{-3} prints as 0xFD
-Bits<int8_t>{-1} prints as 0xFF
+Bits<uint8_t>{253} prints as 0xFD
+Bits<int16_t>{-1} prints as 0xFFFF
+Bits<int16_t>{1} prints as 0x1
 ```

@@ -22,9 +22,11 @@ int main() {
     uint8_t const uval = bb::Bits<uint8_t>{"0x80"};
     std::println("Bits<uint8_t>{{\"0x80\"}} == 128: {}", abs(std::numeric_limits<int8_t>::min()) == uval);
 
-    std::println("\nConverts negative numbers to two's complement bit sequence\n");
-    std::println("Bits<int8_t>{{-3}} prints as {}", bb::Bits<int8_t>{-3});
-    std::println("Bits<int8_t>{{-1}} prints as {}", bb::Bits<int8_t>{-1});
+    std::println("\nConverts numbers to bits using two's complement\n");
+    std::println("Bits<int8_t>{{-3}} prints as {}", bb::Bits<int8_t>{-0x3});
+    std::println("Bits<uint8_t>{{253}} prints as {}", bb::Bits<uint8_t>{0xFD});
+    std::println("Bits<int16_t>{{-1}} prints as {}", bb::Bits<int16_t>{-0x1});
+    std::println("Bits<int16_t>{{1}} prints as {}", bb::Bits<int8_t>{0x1});
 
     return EXIT_SUCCESS;
 }
