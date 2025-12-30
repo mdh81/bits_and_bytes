@@ -25,31 +25,42 @@ $ ctest --test-dir build/
 
 #### C++
 
-When cmake variable `BUILD_EXAMPLES` is `ON`, [examples.cpp](./cpp/examples.cpp) is built and produces this
-output that documents the usage of this library
+##### Print numbers as bits
+
+```c++
+int8_t constexpr ten {10};
+std::println("Bits(10) = ", bb::Bits(ten));
+bb::BitsBase::stringFormat.format = bb::Format::Hexadecimal;
+std::println("Bits(10) = ", bb::Bits(ten));
+```
 
 ```bash
-$ ./build/cpp/examples
-
----------------------------------Bits Usage----------------------------------
-
-Print numbers as bits
-
-Bits(10) prints as 1010
-Bits(10) prints as 0xA when BitsBase::stringFormat.format == Format::Hexadecimal 
-
-Converts bits to numbers by interpreting them as 2s complement
-
-Bits<int8_t>{"0x7F"} == 127: true
-Bits<int8_t>{"0x80"} == -128: true
-Bits<uint8_t>{"0x80"} == 128: true 
-
-Converts negative numbers to 2s complement bit sequence
-
-Converts numbers to bits using two's complement
-
-Bits<int8_t>{-3} prints as 0xFD
-Bits<uint8_t>{253} prints as 0xFD
-Bits<int16_t>{-1} prints as 0xFFFF
-Bits<int16_t>{1} prints as 0x1
+Bits(10) = 1010
+Bits(10) = 0xA
 ```
+#### Convert bits (interpreted as two's complement) to numbers
+```c++
+std::println(" 127  == Bits<int8_t>(\"0111 1111\") : {}", bb::Bits<int8_t>{"0111 1111"} == 0x7F);
+std::println("-128  == Bits<int8_t>(\"0x80\")      : {}", std::numeric_limits<int8_t>::min() == bb::Bits<int8_t>{"0x80"});
+std::println(" 128  == Bits<uint8_t>(\"0x80\")     : {}", abs(std::numeric_limits<int8_t>::min()) == bb::Bits<uint8_t>{"0x80"});
+```
+```bash
+ 127  == Bits<int8_t>("0111 1111") : true
+-128  == Bits<int8_t>("0x80")      : true
+ 128  == Bits<uint8_t>("0x80")     : true
+```
+##### Converts numbers to bits using two's complement
+```c++
+std::println("Bits<int8_t>{{-3}}   = {}", bb::Bits<int8_t>{-0x3});
+std::println("Bits<uint8_t>{{253}} = {}", bb::Bits<uint8_t>{0xFD});
+std::println("Bits<int16_t>{{-1}}  = {}", bb::Bits<int16_t>{-0x1});
+std::println("Bits<int16_t>{{1}}   = {}", bb::Bits<int8_t>{0x1});
+```
+```bash
+Bits<int8_t>{-3}   = 0xFD
+Bits<uint8_t>{253} = 0xFD
+Bits<int16_t>{-1}  = 0xFFFF
+Bits<int16_t>{1}   = 0x1
+```
+
+Build with `-DBUILD_EXAMPLES=ON` to build [examples.cpp](./cpp/examples.cpp) 
