@@ -49,7 +49,7 @@ std::println(" 128  == Bits<uint8_t>(\"0x80\")     : {}", abs(std::numeric_limit
 -128  == Bits<int8_t>("0x80")      : true
  128  == Bits<uint8_t>("0x80")     : true
 ```
-##### Converts numbers to bits using two's complement
+##### Convert numbers to bits using two's complement
 ```c++
 std::println("Bits<int8_t>{{-3}}   = {}", bb::Bits<int8_t>{-0x3});
 std::println("Bits<uint8_t>{{253}} = {}", bb::Bits<uint8_t>{0xFD});

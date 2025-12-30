@@ -14,7 +14,7 @@ int main() {
     bb::BitsBase::stringFormat.format = bb::Format::Hexadecimal;
     std::println("Bits(10) = {}", bb::Bits(ten));
 
-    std::println("\nConverts bits to numbers by interpreting them as two's complement\n");
+    std::println("\nConvert bits to numbers by interpreting them as two's complement\n");
     std::println(" 127  == Bits<int8_t>(\"0111 1111\") : {}", bb::Bits<int8_t>{"0111 1111"} == 0x7F);
     std::println("-128  == Bits<int8_t>(\"0x80\")      : {}", std::numeric_limits<int8_t>::min() == bb::Bits<int8_t>{"0x80"});
     std::println(" 128  == Bits<uint8_t>(\"0x80\")    : {}", abs(std::numeric_limits<int8_t>::min()) == bb::Bits<uint8_t>{"0x80"});
