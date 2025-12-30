@@ -40,14 +40,15 @@ Bits(10) = 0xA
 ```
 ##### Convert bits (interpreted as two's complement) to numbers
 ```c++
-std::println(" 127  == Bits<int8_t>(\"0111 1111\") : {}", Bits<int8_t>{"0111 1111"} == 0x7F);
-std::println("-128  == Bits<int8_t>(\"0x80\")      : {}", std::numeric_limits<int8_t>::min() == Bits<int8_t>{"0x80"});
-std::println(" 128  == Bits<uint8_t>(\"0x80\")     : {}", 128 == Bits<uint8_t>{"0x80"});
+std::string constexpr x7F {"0111 1111"}, x80 {"1000 0000"};
+std::println(" 127  == Bits<int8_t>(x7F) : {}", 127 == Bits<int8_t>{x7F});
+std::println("-128  == Bits<int8_t>(x80) : {}", std::numeric_limits<int8_t>::min() == Bits<int8_t>{x80});
+std::println(" 128  == Bits<uint8_t>(x7F): {}", 128U== Bits<uint8_t>{x80});
 ```
 ```bash
- 127  == Bits<int8_t>("0111 1111") : true
--128  == Bits<int8_t>("0x80")      : true
- 128  == Bits<uint8_t>("0x80")     : true
+ 127  == Bits<int8_t>(x7F) : true
+-128  == Bits<int8_t>(x80) : true
+ 128  == Bits<uint8_t>(x7F): true
 ```
 ##### Convert numbers to bits using two's complement
 ```c++
