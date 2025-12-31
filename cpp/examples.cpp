@@ -16,9 +16,9 @@ int main() {
 
     std::println("\nConvert bits to numbers by interpreting them as two's complement\n");
     std::string constexpr x7F {"0111 1111"}, x80 {"1000 0000"};
-    std::println(" 127  == Bits<int8_t>(x7F) : {}", 127 == Bits<int8_t>{x7F});
-    std::println("-128  == Bits<int8_t>(x80) : {}", std::numeric_limits<int8_t>::min() == Bits<int8_t>{x80});
-    std::println(" 128  == Bits<uint8_t>(x7F): {}", 128U== Bits<uint8_t>{x80});
+    std::println(" 127  == Bits<int8_t>(x7F) : {}",  127 == Bits<int8_t>{x7F});
+    std::println("-128  == Bits<int8_t>(x80) : {}", -128 == Bits<int8_t>{x80});
+    std::println(" 128  == Bits<uint8_t>(x7F): {}",  128U== Bits<uint8_t>{x80});
 
     std::println("\nConverts numbers to bits using two's complement\n");
     std::println("Bits<int8_t>(-3)   = {}", Bits<int8_t>{-0x3});
