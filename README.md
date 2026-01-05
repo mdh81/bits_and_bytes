@@ -48,7 +48,7 @@ std::println(" 128  == Bits<uint8_t>(x80): {}",  128U == Bits<uint8_t>{x80});
 ```bash
  127  == Bits<int8_t>(x7F) : true
 -128  == Bits<int8_t>(x80) : true
- 128  == Bits<uint8_t>(x7F): true
+ 128  == Bits<uint8_t>(x80): true
 ```
 ##### Convert numbers to bits using two's complement
 ```c++
